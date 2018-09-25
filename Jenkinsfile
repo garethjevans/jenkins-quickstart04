@@ -19,14 +19,12 @@ pipeline {
         steps {
           dir ('/home/jenkins/go/src/github.com/garethjevans/jenkins-quickstart04') {
             checkout scm
-            sh "make linux"
             sh 'export VERSION=$PREVIEW_VERSION && skaffold build -f skaffold.yaml'
 
             sh "jx step validate --min-jx-version 1.2.36"
             sh "jx step post build --image \$JENKINS_X_DOCKER_REGISTRY_SERVICE_HOST:\$JENKINS_X_DOCKER_REGISTRY_SERVICE_PORT/$ORG/$APP_NAME:$PREVIEW_VERSION"
           }
           dir ('/home/jenkins/go/src/github.com/garethjevans/jenkins-quickstart04/charts/preview') {
-            sh "make preview"
             sh "jx preview --app $APP_NAME --dir ../.."
           }
         }
@@ -53,7 +51,6 @@ pipeline {
             sh "make tag"
           }
           dir ('/home/jenkins/go/src/github.com/garethjevans/jenkins-quickstart04') {
-            sh "make build"
             sh 'export VERSION=`cat VERSION` && skaffold build -f skaffold.yaml'
             sh "jx step validate --min-jx-version 1.2.36"
             sh "jx step post build --image \$JENKINS_X_DOCKER_REGISTRY_SERVICE_HOST:\$JENKINS_X_DOCKER_REGISTRY_SERVICE_PORT/$ORG/$APP_NAME:\$(cat VERSION)"
