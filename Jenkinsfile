@@ -19,7 +19,7 @@ pipeline {
         steps {
           dir ('/home/jenkins/go/src/github.com/garethjevans/jenkins-quickstart04') {
             checkout scm
-            sh "make linux"
+            sh "make build"
             sh 'export VERSION=$PREVIEW_VERSION && skaffold build -f skaffold.yaml'
 
             sh "jx step validate --min-jx-version 1.2.36"
